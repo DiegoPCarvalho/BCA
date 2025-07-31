@@ -1,0 +1,42 @@
+[
+    {
+        "loja": "954",
+        "codSap": "000004149201",
+        "ean": "7898506458967",
+        "preco": "39.99",
+        "preco_promoc": "39.99",
+        "descricao": "ROTEADOR WIFI 150MBPS RE047 MULTILASER"
+    },
+    {
+        "loja": "123",
+        "codSap": "000004149201",
+        "ean": "7898314110118",
+        "preco": "39.99",
+        "preco_promoc": "39.99",
+        "descricao": "WHITE LUB - SUPER - ORBI QUIMICA"
+    },
+    {
+        "loja": "123",
+        "codSap": "000004149201",
+        "ean": "7898907527774",
+        "preco": "59.99",
+        "preco_promoc": "59.99",
+        "descricao": "MP80 - LIMPA CONTATO - MUNDIAL PRIME"
+    },
+    {
+        "loja": "123",
+        "codSap": "000004149201",
+        "ean": "7891010256968",
+        "preco": "79.99",
+        "preco_promoc": "59.99",
+        "descricao": "Tylenol - Sinus"
+    },
+    {
+        "loja": "456",
+        "codSap": "000004149201",
+        "ean": "7898314110118",
+        "preco": "39.99",
+        "preco_promoc": "39.99",
+        "descricao": "ROTEADOR WIFI 150MBPS RE047 MULTILASER"
+    }
+]   
