@@ -1,6 +1,6 @@
 const app = require('express')()
 const cors = require('cors')
-const port = 3001
+const port = 443
 const bancoPreco = require('./banco.json')
 const axios = require('axios')
 
@@ -11,7 +11,7 @@ loja=${loja}&ean=${ean}`;
 
 app.use(cors())
 
-app.get("/product-service.prod-hydra.azr.internal.americanas.io/search/price/prost", (req, res) => {
+app.get("/search/price/prost", (req, res) => {
 
     const loja = req.query.loja
     const ean = req.query.ean
@@ -50,15 +50,7 @@ app.get("/prost", (req, res) => {
 
 
 app.get('/', async (req, res) => {
-
-    const loja = req.query.loja
-    const ean = req.query.ean
-    const url2 = `https://product-service.prod-hydra.azr.internal.americanas.io/search/price/prost?
-loja=${loja}&ean=${ean}`;
-
-    const data = await axios(url2).then(resp => resp.data)
-
-    res.json(data)
+    res.send('ola mundo')
 })
 
 app.listen(port, () => {
