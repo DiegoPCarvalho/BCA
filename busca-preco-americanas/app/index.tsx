@@ -8,9 +8,8 @@ import useAppData from '@/hooks/useAppData'
 
 export default function Home() {
 
-  const { carregarConfiguracoes, salvarLogs } = useAppData()
+  const { carregarConfiguracoes } = useAppData()
   const textBuscaRef = useRef<{ focus: () => void }>(null);
-  const dt = new Date()
 
   const [loja, setLoja] = useState<string>('')
   const [baseUrl, setBaseUrl] = useState<string>('')
@@ -23,8 +22,8 @@ export default function Home() {
 
     const dado = await carregarConfiguracoes!()
 
-    setLoja(dado?.loja ?? '')
-    setBaseUrl(dado?.urlApi?.trim().replace(/\/$/, '') ?? '')
+    setLoja(dado?.loja!)
+    setBaseUrl(dado?.urlApi!)
 
   }
 

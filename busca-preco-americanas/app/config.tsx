@@ -23,8 +23,8 @@ export default function Config() {
     async function Busca() {
         const dado = await carregarConfiguracoes!()
 
-        setLoja(dado?.loja ?? '')
-        setUrlApi(dado?.urlApi ?? '')
+        setLoja(dado?.loja!)
+        setUrlApi(dado?.urlApi!)
     }
 
     async function salvar() {

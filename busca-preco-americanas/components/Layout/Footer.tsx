@@ -19,7 +19,7 @@ export default function Footer(props: FooterProps){
         async function Busca() {
             const dado = await carregarConfiguracoes!()
     
-            setLoja(dado?.loja ?? '')
+            setLoja(dado?.loja!)
         }
 
     return (

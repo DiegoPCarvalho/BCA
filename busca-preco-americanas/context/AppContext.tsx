@@ -3,8 +3,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import * as FileSystem from 'expo-file-system';
-import * as MediaLibrary from 'expo-media-library';
-
 
 
 interface AppContextProps {
@@ -52,16 +50,6 @@ export function AppProvider({ children }: any) {
     const [preco, setPreco] = useState<string>('')
 
 
-    // async function mostrarDado(baseurl: string, loja: string | number, codigo: string | number){
-    //     try{
-    //         const { data }  = await axios.get(`${baseurl}?loja=${loja}&ean=${codigo}`, { timeout: 7000 })
-
-    //         return data
-    //     }catch(e){
-    //         console.warn(e)
-    //     }
-    // }
-
     function mostrarToast(tipo: string, text1: string, text2: string) {
         Toast.show({
             type: tipo,
@@ -74,12 +62,12 @@ export function AppProvider({ children }: any) {
     async function buscarPreco(baseurl: string, loja: string | number, codigo: string | number) {
         try {
 
-            const data = await axios.get(`https://product-service.prod-hydra.azr.internal.americanas.io/search/price/prost?loja=${584}&ean=${7896306624827}`).then(resp => resp.data)
+            const data = await axios.get(`${baseurl}?loja=${loja}&ean=${codigo}`).then(resp => resp.data)
 
             if (data.length > 0) {
                 if (data[0]?.httpStatusCode === 404) {
                     setMensagemErro("Produto Não Encontrados Passe o Código Novamente");
-                    // salvarLogs(`${dt}`, "Erro", "Produto ou Loja não encontrado")
+                    salvarLogs(`${dt}`, "Erro", "Produto ou Loja não encontrado")
                     setInicio(false);
                     setErro(true);
                     setTimeout(() => {
@@ -89,39 +77,54 @@ export function AppProvider({ children }: any) {
                 } else {
                     setDescricao(data[0]?.descricao)
                     setPreco(data[0]?.preco)
-                    // setInicio(false)
-                    // setResposta(true)
-                    // // salvarLogs(`${dt}`, "Sucesso", "Efetuado a leitura do código e buscado na API")
-                    // setTimeout(() => {
-                    //     setResposta(false)
-                    //     setInicio(true)
-                    // }, 2000)
+                    setInicio(false)
+                    setResposta(true)
+                    salvarLogs(`${dt}`, "Sucesso", "Efetuado a leitura do código e buscado na API" + descricao + " " + preco)
+                    setTimeout(() => {
+                        setResposta(false)
+                        setInicio(true)
+                    }, 2000)
                 }
             }
 
         } catch (error: any) {
+            const mensagem = "Servidor offline. Tente novamente mais tarde.";
+
             console.warn("Erro capturado:", error?.message || error);
 
+            const logDetalhado = error?.toString?.() || JSON.stringify(error);
+
             if (axios.isAxiosError(error)) {
-                if (error.code === 'ERR_NETWORK' || error.response?.status === 404 || error.response?.status === 500) {
-                    setMensagemErro("Servidor offline Tente novamente mais tarde");
-                    salvarLogs(`${dt}`, "Erro", "Servidor OffLine " + error)
+                const status = error.response?.status;
+                const isErroRede = error.code === 'ERR_NETWORK';
+                const isErroServidor = status === 404 || status === 500;
+
+                if (isErroRede || isErroServidor) {
+                    setMensagemErro(mensagem);
+                    salvarLogs(`${dt}`, "Erro", "Servidor OffLine - " + logDetalhado);
                     setInicio(false);
                     setErro(true);
+
                     setTimeout(() => {
-                        setErro(false)
-                        setInicio(true)
-                    }, 2000)
+                        setErro(false);
+                        setInicio(true);
+                    }, 2000);
+                } else {
+                    // outros erros Axios podem ser tratados aqui se necessário
+                    console.warn("Erro Axios não tratado:", status, error.message);
                 }
             } else {
-                setMensagemErro("Servidor offline Tente novamente mais tarde");
-                salvarLogs(`${dt}`, "Erro", "Servidor OffLine " + error)
+                // erro genérico
+                setMensagemErro(mensagem);
+                salvarLogs(`${dt}`, "Erro", "Erro desconhecido - " + logDetalhado);
+                mostrarToast('error', "Erro no sistema", mensagem);    
                 setInicio(false);
                 setErro(true);
+
                 setTimeout(() => {
-                    setErro(false)
-                    setInicio(true)
-                }, 2000)
+                    setErro(false);
+                    setInicio(true);
+                }, 2000);
             }
         }
     }
@@ -130,10 +133,9 @@ export function AppProvider({ children }: any) {
         try {
             await AsyncStorage.setItem('loja', loja)
             await AsyncStorage.setItem('urlApi', urlApi)
-            mostrarToast!('success', "Salvar", "Configuração salvas com sucesso")
-            salvarLogs(`${dt}`, "Sucesso", "Configuração salva com sucesso")
+            mostrarToast('success', "Salvar", "Configuração salvas com sucesso")
         } catch (e) {
-            mostrarToast!('error', "Erro", "Erro ao salvar configurações")
+            mostrarToast('error', "Erro", "Erro ao salvar configurações")
             salvarLogs(`${dt}`, "Erro", "Não foi possivel salvar as configurações " + e)
         }
     }
@@ -143,11 +145,10 @@ export function AppProvider({ children }: any) {
             const loja = await AsyncStorage.getItem('loja')
             const urlApi = await AsyncStorage.getItem('urlApi')
 
-            salvarLogs(`${dt}`, "Sucesso", "Configurações carregadas com sucesso")
             console.warn(loja, urlApi)
             return { loja, urlApi };
         } catch (e) {
-            mostrarToast!('error', "Erro", "Erro ao Carregar Configurações")
+            mostrarToast('error', "Erro", "Erro ao Carregar Configurações")
             salvarLogs(`${dt}`, "Erro", "Erro ao carregar as configurações " + e)
             return null
         }
