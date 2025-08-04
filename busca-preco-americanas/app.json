@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ZSearch Price",
+    "name": "ZSearchPriceRN",
     "slug": "ZSearchPrice",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "buscaprecoamericanas",
@@ -13,7 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "androidNavigationBar": {
-      "visible": false,
+      "visible": "immersive",
       "barStyle": "light-content"
     },
     "ios": {

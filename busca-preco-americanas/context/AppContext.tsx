@@ -1,5 +1,4 @@
 import { createContext, useState } from 'react';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import * as FileSystem from 'expo-file-system';
@@ -42,13 +41,6 @@ const AppContext = createContext<AppContextProps>({})
 
 export function AppProvider({ children }: any) {
 
-    const [erro, setErro] = useState<boolean>(false)
-    const [resposta, setResposta] = useState<boolean>(false)
-    const [inicio, setInicio] = useState<boolean>(true)
-    const [mensagemErro, setMensagemErro] = useState<string>('')
-    const [descricao, setDescricao] = useState<string>('')
-    const [preco, setPreco] = useState<string>('')
-
 
     function mostrarToast(tipo: string, text1: string, text2: string) {
         Toast.show({
@@ -57,76 +49,6 @@ export function AppProvider({ children }: any) {
             text2,
             position: 'bottom'
         });
-    }
-
-    async function buscarPreco(baseurl: string, loja: string | number, codigo: string | number) {
-        try {
-
-            const data = await axios.get(`${baseurl}?loja=${loja}&ean=${codigo}`).then(resp => resp.data)
-
-            if (data.length > 0) {
-                if (data[0]?.httpStatusCode === 404) {
-                    setMensagemErro("Produto Não Encontrados Passe o Código Novamente");
-                    salvarLogs(`${dt}`, "Erro", "Produto ou Loja não encontrado")
-                    setInicio(false);
-                    setErro(true);
-                    setTimeout(() => {
-                        setErro(false)
-                        setInicio(true)
-                    }, 2000)
-                } else {
-                    setDescricao(data[0]?.descricao)
-                    setPreco(data[0]?.preco)
-                    setInicio(false)
-                    setResposta(true)
-                    salvarLogs(`${dt}`, "Sucesso", "Efetuado a leitura do código e buscado na API" + descricao + " " + preco)
-                    setTimeout(() => {
-                        setResposta(false)
-                        setInicio(true)
-                    }, 2000)
-                }
-            }
-
-        } catch (error: any) {
-            const mensagem = "Servidor offline. Tente novamente mais tarde.";
-
-            console.warn("Erro capturado:", error?.message || error);
-
-            const logDetalhado = error?.toString?.() || JSON.stringify(error);
-
-            if (axios.isAxiosError(error)) {
-                const status = error.response?.status;
-                const isErroRede = error.code === 'ERR_NETWORK';
-                const isErroServidor = status === 404 || status === 500;
-
-                if (isErroRede || isErroServidor) {
-                    setMensagemErro(mensagem);
-                    salvarLogs(`${dt}`, "Erro", "Servidor OffLine - " + logDetalhado);
-                    setInicio(false);
-                    setErro(true);
-
-                    setTimeout(() => {
-                        setErro(false);
-                        setInicio(true);
-                    }, 2000);
-                } else {
-                    // outros erros Axios podem ser tratados aqui se necessário
-                    console.warn("Erro Axios não tratado:", status, error.message);
-                }
-            } else {
-                // erro genérico
-                setMensagemErro(mensagem);
-                salvarLogs(`${dt}`, "Erro", "Erro desconhecido - " + logDetalhado);
-                mostrarToast('error', "Erro no sistema", mensagem);    
-                setInicio(false);
-                setErro(true);
-
-                setTimeout(() => {
-                    setErro(false);
-                    setInicio(true);
-                }, 2000);
-            }
-        }
     }
 
     async function salvarConfiguracao(loja: string, urlApi: string) {
@@ -226,13 +148,6 @@ export function AppProvider({ children }: any) {
     return (
         <AppContext.Provider
             value={{
-                buscarPreco,
-                erro,
-                resposta,
-                inicio,
-                descricao,
-                preco,
-                mensagemErro,
                 salvarConfiguracao,
                 carregarConfiguracoes,
                 mostrarToast,

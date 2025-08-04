@@ -1,21 +1,29 @@
-import useAppData from "@/hooks/useAppData";
+
 import { StyleSheet, Text, View } from "react-native";
 
-export default function CentralResposta() {
-    const { inicio, resposta, erro, descricao, preco, mensagemErro } = useAppData();
+interface CentralRespostaProps {
+    inicio: boolean
+    resposta: boolean
+    erro: boolean
+    descricao: string
+    preco: string
+    mensagemErro: string
+}
 
+export default function CentralResposta(props: CentralRespostaProps) {
+    
     return (
         <View style={styles.main}>
-            {inicio ?
+            {props.inicio ?
                 <Text style={styles.fraseInicial}>PASSE O CÓDIGO DE BARRAS DO PRODUTO NO LEITOR</Text>
-                : resposta ? (
+                : props.resposta ? (
                     <>
-                        <Text style={styles.valor}>{descricao}</Text>
-                        <Text style={styles.valor}>{preco}</Text>
+                        <Text style={styles.valor}>{props.descricao}</Text>
+                        <Text style={styles.valor}>{props.preco}</Text>
                     </>
-                ) : erro ? (
+                ) : props.erro ? (
                     <>
-                        <Text style={styles.erro}>{mensagemErro}</Text>
+                        <Text style={styles.erro}>{props.mensagemErro}</Text>
                     </>
                 ) : false}
         </View>
