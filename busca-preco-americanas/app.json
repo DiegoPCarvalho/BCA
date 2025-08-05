@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ZSearchPriceRN",
+    "name": "ZSearch Price",
     "slug": "ZSearchPrice",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "buscaprecoamericanas",
@@ -30,7 +30,11 @@
         "MANAGE_EXTERNAL_STORAGE"
       ],
       "edgeToEdgeEnabled": true,
-      "package": "com.diegopcarvalho.buscaprecoamericanas"
+      "package": "com.diegopcarvalho.buscaprecoamericanas",
+      "splash": {
+        "image": "./assets/images/logozhaz.png",
+        "backgroundColor": "#FF0000"
+      }
     },
     "web": {
       "bundler": "metro",

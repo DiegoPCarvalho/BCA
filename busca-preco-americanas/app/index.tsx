@@ -36,32 +36,36 @@ export default function Home() {
 
   }
 
+  function mudarvalorReal(valor: string): string {
+    const valorFormatado = valor.toString().replace(/\./, ',');
+    return valorFormatado
+  }
+
   async function buscarPreco(codigo: string) {
     try {
 
       const { data } = await axios.get(`${baseUrl}?loja=${loja}&ean=${codigo}`)
 
-      if (data.length > 0) {
-        if (data[0]?.httpStatusCode === 404) {
-          setMensagemErro("Produto Não Encontrados Passe o Código Novamente");
-          salvarLogs!(`${dt}`, "Erro", "Produto ou Loja não encontrado")
-          setInicio(false);
-          setErro(true);
-          setTimeout(() => {
-            setErro(false)
-            setInicio(true)
-          }, 2000)
-        } else {
-          setDescricao(data[0]?.descricao)
-          setPreco(data[0]?.preco)
-          setInicio(false)
-          setResposta(true)
-          salvarLogs!(`${dt}`, "Sucesso", "Efetuado a leitura do código e buscado na API" + descricao + " " + preco)
-          setTimeout(() => {
-            setResposta(false)
-            setInicio(true)
-          }, 2000)
-        }
+      // console.log(data)
+      if (!data || data?.httpStatusCode === 404) {
+        setMensagemErro("Produto Não Encontrados Passe o Código Novamente");
+        salvarLogs!(`${dt}`, "Erro", "Produto ou Loja não encontrado")
+        setInicio(false);
+        setErro(true);
+        setTimeout(() => {
+          setErro(false)
+          setInicio(true)
+        }, 2000)
+      } else {
+        setDescricao(data?.descricao)
+        setPreco("R$ " + mudarvalorReal(data?.preco))
+        setInicio(false)
+        setResposta(true)
+        salvarLogs!(`${dt}`, "Sucesso", "Efetuado a leitura do código e buscado na API" + descricao + " " + preco)
+        setTimeout(() => {
+          setResposta(false)
+          setInicio(true)
+        }, 2000)
       }
 
     } catch (error: any) {
@@ -107,14 +111,14 @@ export default function Home() {
   }
 
   function mostrar() {
-     console.log(baseUrl)
+    console.log(baseUrl)
   }
 
   return (
     <View style={styles.home}>
       <View><Header config /></View>
-      <View><CentralResposta  inicio={inicio} resposta={resposta} erro={erro} descricao={descricao} preco={preco} mensagemErro={mensagemErro}/></View>
-      <View><TextBusca ref={textBuscaRef} loja={loja} baseurl={baseUrl} buscar={buscarPreco} text={mostrar}/></View>
+      <View><CentralResposta inicio={inicio} resposta={resposta} erro={erro} descricao={descricao} preco={preco} mensagemErro={mensagemErro} /></View>
+      <View><TextBusca ref={textBuscaRef} loja={loja} baseurl={baseUrl} buscar={buscarPreco} text={mostrar} /></View>
       <View><Footer mostrar /></View>
     </View>
   )

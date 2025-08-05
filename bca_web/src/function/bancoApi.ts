@@ -1,3 +1,3 @@
 export default function bancoApi(): string {
-    return 'https://192.168.15.157/search/price/prost'
+    return 'https://product-service.prod-hydra.azr.internal.americanas.io/search/price/prost'
 }

@@ -22,7 +22,9 @@ export async function GET(request: NextRequest) {
       rejectUnauthorized: false, // aceita certificado autoassinado
     });
 
-    const { data } = await axios.get(url, { httpsAgent: agent });
+    const { data } = await axios.get(url, 
+      { httpsAgent: agent }
+    );
 
     return NextResponse.json(data);
   } catch (error: any) {

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 interface TextBuscaProps {
   baseurl: string,
@@ -104,9 +104,6 @@ const TextBusca = forwardRef((props: TextBuscaProps, ref) => {
           }}
         />
       </View>
-      <TouchableOpacity onPress={() => props.text!()}>
-        <Text>Buscar</Text>
-      </TouchableOpacity>
     </View>
   );
 });
@@ -122,6 +119,6 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     fontSize: 16,
-    color: "#000000"
+    color: "#FF0000"
   },
 });

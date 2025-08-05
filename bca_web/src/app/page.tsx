@@ -10,8 +10,8 @@ import bancoLocal from '@/function/bancoLocal'
 
 export default function Home() {
 
-  const [loja, setLoja] = useState<string>('123')
-  const [ean, setEan] = useState<string>('')
+  const [loja, setLoja] = useState<string>('584')
+  const [ean, setEan] = useState<any>("")
   const [descricao, setDescricao] = useState<string>('')
   const [preco, setPreco] = useState<string>('')
   const [mensagemErro, setMensagemErro] = useState<boolean>(false)
@@ -20,9 +20,11 @@ export default function Home() {
 
   async function buscarDados() {
     try {
-      const { data } = await axios.get(bancoLocal(loja, ean))
 
-      if (!data || data[0].httpStatusCode === 404) {
+      const { data } = await axios.get(bancoLocal(loja, ean), { timeout: 7000})
+
+      console.log(data)
+      if (!data || data.length === 0 || data.httpStatusCode === 404) {
         setMensagemErro(true)
         setDescricaoPreco(false)
         setDescricao('')
@@ -38,8 +40,8 @@ export default function Home() {
       } else {
         setMensagemErro(false)
         setDescricaoPreco(true)
-        setDescricao(data[0].descricao)
-        setPreco(data[0].preco)
+        setDescricao(data.descricao)
+        setPreco(data.preco)
         setError('')
         setTimeout(() => {
           setDescricao('')
@@ -50,8 +52,8 @@ export default function Home() {
         return
       }
 
-    } catch (e) {
-      console.error('Erro capturado:', error);
+    } catch (error) {
+      console.log('Erro capturado:', error);
 
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
@@ -77,8 +79,21 @@ export default function Home() {
         }
       } else {
         // 🚨 Aqui é onde caiu no seu caso
-        console.error('Erro desconhecido capturado:', error);
-        return;
+        console.log('Erro desconhecido capturado:', error);
+        setMensagemErro(true);
+          setDescricaoPreco(false);
+          setDescricao('');
+          setPreco('');
+          setError('SERVIDOR OFFLINE TENTE NOVAMENTE MAIS TARDE');
+
+          setTimeout(() => {
+            setDescricao('');
+            setPreco('');
+            setDescricaoPreco(false);
+            setMensagemErro(false);
+          }, 2000);
+
+          return;
       }
     }
   }
